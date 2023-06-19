@@ -2,7 +2,172 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<form id="createForm">
+    <div>
+        <input name="inventoryNumber" class="form-group col-md-8 mb-3" placeholder="Инв. номер" type="text" />
+        <input name="description" class="form-group col-md-8 mb-3" placeholder="Описание" type="text" />
+        <input name="owner" class="form-group col-md-8 mb-3" placeholder="Владелец" type="text" />
+        <input name="location" class="form-group col-md-8 mb-3" placeholder="Локация" type="text" />
+    </div>
+    <button id="createTask" class="btn btn-primary col-md-3 mb-2">Создать</button>
+</form>
+
+<table class="table table-dark table-hover" id="tableId">
+    <thead>
+        <tr>
+            <th>Инв. номер</th>
+            <th>Описание</th>
+            <th>Владелец</th>
+            <th>Локация</th>
+            <th>Дата добавления</th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+            },
+            buttonsStyling: false
+        })
+
+        let dataTable = $('#tableId').DataTable({
+            info: true,
+            serverSide: true,
+            searching: false,
+            paging: false,
+            sorting: false,
+            ajax: {
+                url: '@Url.Action("ComputerHandler")',
+                method: 'POST',
+                data: model
+            },
+            columns: [
+                { data: 'inventoryNumber' },
+                { data: 'description' },
+                { data: 'owner' },
+                { data: 'location' },
+                { data: 'additionDate' },
+                {
+                    data: null,
+                    sortable: false,
+                    render: function (data, type) {
+                        return '<button class="btn btn-success btn-sm center-block">Подробнее</button>'
+                    }
+                }
+            ],
+            createdRow: function(nRow, data) {
+                var handlerComplete = function() {
+                    toComputer();
+                }
+
+                for (var i = 0; i < dataTable.columns().header().length - 1; i++) {
+                    $('td', nRow).eq(i).css('cursor', 'pointer');
+
+                    $('td', nRow).eq(i).on('click', null);
+                }
+                $('td button', nRow).on('click', handlerComplete);
+            }
+            //createdRow: function (nRow, data) {
+            //    var handlerComplete = function () {
+            //        swalWithBootstrapButtons.fire({
+            //            title: 'Вы уверены?',
+            //            icon: 'warning',
+            //            confirmButtonText: 'Да',
+            //            reverseButtons: true
+            //        }).then((result) => {
+            //            if (result.isConfirmed) {
+            //                console.log("%d", data.isCompleted);
+            //                $.ajax({
+            //                    type: 'POST',
+            //                    url: '@Url.Action("ChangeTaskCompleteStatus")',
+            //                    data: {
+            //                        id: data.id,
+            //                        isCompleted: data.isCompleted
+            //                    },
+            //                    success: function (response) {
+            //                        Swal.fire({
+            //                            title: 'Информация',
+            //                            text: response.description,
+            //                            icon: 'success',
+            //                            confimButtonText: 'Ok'
+            //                        })
+            //                        dataTable.draw();
+            //                    },
+            //                    error: function (response) {
+            //                        Swal.fire({
+            //                            title: 'Информация',
+            //                            text: response.responseJSON.description,
+            //                            icon: 'error',
+            //                            confimButtonText: 'Ok'
+            //                        })
+            //                    }
+            //                })
+            //            }
+            //        })
+            //    }
+            
+            //    for (var i = 0; i < dataTable.columns().header().length - 1; i++) {
+            //        $('td', nRow).eq(i).css('cursor', 'pointer');
+            
+            //        $('td', nRow).eq(i).on('click', null);
+            //    }
+            //    $('td button', nRow).on('click', handlerComplete);
+            //}
+        })
+
+        function model() {
+            return {
+                InventoryNumber: $('input[name="inventoryNumber"]').val(),
+                Description: $('input[name="description"]').val(),
+                Owner: $('input[name="descriptionTask"]').val(),
+                Location: $('input[name="location"]').val(),
+            }
+        }
+
+        function toComputer() {
+            var url = '@Url.Action("Index", "Computer")';
+            window.location.href = url;
+        }
+
+        //$('input[name="descriptionTask"]').on('change', function () {
+        //    dataTable.draw();
+        //})
+
+        //$('#prioritySearch').on('change', function () {
+        //    dataTable.draw();
+        //})
+
+        $('#createTask').on('click', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Create", "Home")',
+                data: $('#createForm').serialize(),
+                success: function (response) {
+                    Swal.fire({
+                        title: 'Информация',
+                        text: response.description,
+                        icon: 'success',
+                        confimButtonText: 'Ok'
+                    })
+                },
+                error: function (response) {
+                    Swal.fire({
+                        title: 'Информация',
+                        text: response.responseJSON.description,
+                        icon: 'error',
+                        confimButtonText: 'Ok'
+                    })
+                }
+            })
+        })
+    </script>
+}

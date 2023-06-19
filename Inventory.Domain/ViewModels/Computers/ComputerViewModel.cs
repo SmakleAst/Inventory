@@ -19,6 +19,6 @@ namespace Inventory.Domain.ViewModels.Computers
         public string Location { get; set; }
 
         [Display(Name = "Дата добавления")]
-        public DateTime AdditionDate { get; set; }
+        public string AdditionDate { get; set; }
     }
 }
