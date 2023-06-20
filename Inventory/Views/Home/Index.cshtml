@@ -65,7 +65,9 @@
             ],
             createdRow: function(nRow, data) {
                 var handlerComplete = function() {
-                    toComputer();
+                    //console.log(data.id);
+                    toComputer(data.id);
+                    //toComputer();
                 }
 
                 for (var i = 0; i < dataTable.columns().header().length - 1; i++) {
@@ -132,10 +134,14 @@
             }
         }
 
-        function toComputer() {
-            var url = '@Url.Action("Index", "Computer")';
-            window.location.href = url;
+        function toComputer(id) {
+            var url = '@Url.Action("Index", "Computer", new { id = "__id__" })';
+            window.location.href = url.replace('__id__', id);
         }
+        //function toComputer() {
+        //    var url = '@Url.Action("Index", "Computer")';
+        //    window.location.href = url;
+        //}
 
         //$('input[name="descriptionTask"]').on('change', function () {
         //    dataTable.draw();

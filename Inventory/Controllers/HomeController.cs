@@ -16,11 +16,6 @@ namespace Inventory.Controllers
             return View();
         }
 
-        public IActionResult ComputerInfo()
-        {
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> Create(CreateComputerViewModel model)
         {

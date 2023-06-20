@@ -1,11 +1,12 @@
-﻿@*@page
-@model Inventory.Views.Computer.IndexModel
-@{
-}*@
-@{
-    ViewData["Title"] = "Computer Page";
-}
+﻿@model ComputerViewModel
 
-<div>
-    Компьютер
-</div>
+<form id="createForm">
+    <div>
+        <input name="inventoryNumber" class="form-group col-md-8 mb-3" placeholder=@Model.InventoryNumber type="text" />
+        <input name="description" class="form-group col-md-8 mb-3" placeholder=@Model.Description type="text" />
+        <input name="owner" class="form-group col-md-8 mb-3" placeholder=@Model.Owner type="text" />
+        <input name="location" class="form-group col-md-8 mb-3" placeholder=@Model.Location type="text" />
+        <input name="additionDate" class="form-group col-md-8 mb-3" placeholder=@Model.AdditionDate type="text" />
+    </div>
+    <button id="createTask" class="btn btn-primary col-md-3 mb-2">Создать</button>
+</form>

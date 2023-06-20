@@ -6,6 +6,7 @@ using Inventory.Domain.ViewModels.Computers;
 using Inventory.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Inventory.Service.Implementations
 {
@@ -70,7 +71,7 @@ namespace Inventory.Service.Implementations
         {
             try
             {
-                var tasks = await _computerRepository.GetAll()
+                var computers = await _computerRepository.GetAll()
                     //.WhereIf(!string.IsNullOrWhiteSpace(filter.Description),
                     //    x => x.Description.Contains(filter.Description))
                     //.WhereIf(filter.Priority.HasValue, x => x.Priority == filter.Priority)
@@ -87,7 +88,7 @@ namespace Inventory.Service.Implementations
 
                 return new ComputerResponse<IEnumerable<ComputerViewModel>>()
                 {
-                    Data = tasks,
+                    Data = computers,
                     StatusCode = StatusCode.Ok
                 };
             }
@@ -100,6 +101,23 @@ namespace Inventory.Service.Implementations
                     StatusCode = StatusCode.InternalServerError
                 };
             }
+        }
+
+        public ComputerViewModel GetOneComputer(int id)
+        {
+            var computer = _computerRepository.GetAll()
+                .Select(x => new ComputerViewModel()
+                {
+                    Id = x.Id,
+                    InventoryNumber = x.InventoryNumber,
+                    Description = x.Description,
+                    Owner = x.Owner,
+                    Location = x.Location,
+                    AdditionDate = x.AdditionDate.ToLongDateString(),
+                })
+                .FirstOrDefault(x => x.Id == id);
+
+            return computer;
         }
     }
 }

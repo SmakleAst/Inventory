@@ -1,5 +1,9 @@
-﻿using Inventory.Service.Interfaces;
+﻿using Inventory.DAL;
+using Inventory.DAL.Interfaces;
+using Inventory.Domain.Entity;
+using Inventory.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Controllers
 {
@@ -10,9 +14,12 @@ namespace Inventory.Controllers
         public ComputerController(IComputerService computerService) =>
             _computerService = computerService;
 
-        public IActionResult Index()
+        [Route("Computer/Index/{id}")]
+        public IActionResult Index(int id)
         {
-            return View();
+            var computer = _computerService.GetOneComputer(id);
+
+            return View(computer);
         }
     }
 }

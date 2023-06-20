@@ -9,5 +9,7 @@ namespace Inventory.Service.Interfaces
         Task<IComputerResponse<ComputerEntity>> Create(CreateComputerViewModel model);
 
         Task<IComputerResponse<IEnumerable<ComputerViewModel>>> GetComputers();
+
+        ComputerViewModel GetOneComputer(int id);
     }
 }
