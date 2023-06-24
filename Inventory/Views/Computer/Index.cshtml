@@ -1,17 +1,20 @@
 ﻿@model ComputerViewModel
 
-<form id="computerForm">
-    <div>
-        <input name="id" hidden value=@Model.Id />
-        <input disabled name="inventoryNumber" id="inventoryNumber" class="form-group col-md-8 mb-3" value=@Model.InventoryNumber type="text" />
-        <input disabled name="description" id="description" class="form-group col-md-8 mb-3" value=@Model.Description type="text" />
-        <input disabled name="owner" id="owner" class="form-group col-md-8 mb-3" value=@Model.Owner type="text" />
-        <input disabled name="location" id="location" class="form-group col-md-8 mb-3" value=@Model.Location type="text" />
-        <input disabled name="additionDate" id="additionDate" class="form-group col-md-8 mb-3" value=@Model.AdditionDate type="datetime" />
-    </div>
-    <button id="saveChanges" class="btn btn-primary col-md-3 mb-2">Создать</button>
-    <button id="edit" class="btn btn-primary col-md-3 mb-2">Изменить</button>
-</form>
+<div class="row">
+    <form id="computerForm" class="col-md-6">
+        <div>
+            <input name="id" hidden value=@Model.Id />
+            <input disabled name="inventoryNumber" id="inventoryNumber" class="form-group col-md-8 mb-3" value=@Model.InventoryNumber type="text" />
+            <input disabled name="description" id="description" class="form-group col-md-8 mb-3" value=@Model.Description type="text" />
+            <input disabled name="owner" id="owner" class="form-group col-md-8 mb-3" value=@Model.Owner type="text" />
+            <input disabled name="location" id="location" class="form-group col-md-8 mb-3" value=@Model.Location type="text" />
+            <input disabled name="additionDate" id="additionDate" class="form-group col-md-8 mb-3" value=@Model.AdditionDate type="datetime" />
+        </div>
+        <button disabled id="saveChanges" class="btn btn-primary col-md-3 mb-2">Сохранить</button>
+        <button id="edit" class="btn btn-primary col-md-3 mb-2">Изменить</button>
+    </form>
+    <img src="~/QrCode/MyQR.png" class="col-md-4">
+</div>
 
 @section Scripts
 {
@@ -26,6 +29,7 @@
             $('#description').prop("disabled", false);
             $('#owner').prop("disabled", false);
             $('#location').prop("disabled", false);
+            $('#saveChanges').prop("disabled", false);
         });
 
         $('#saveChanges').on('click', function (e) {
@@ -55,6 +59,9 @@
             $('#description').prop("disabled", true);
             $('#owner').prop("disabled", true);
             $('#location').prop("disabled", true);
+            $('#saveChanges').prop("disabled", true);
         })
+
+
     </script>
 }

@@ -12,6 +12,7 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 builder.Services.AddScoped<IBaseRepository<ComputerEntity>, ComputerRepository>();
 builder.Services.AddScoped<IComputerService, ComputerService>();
+builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 
 var connectionString = builder.Configuration.GetConnectionString("MSSQL");
 builder.Services.AddDbContext<AppDbContext>(options =>
