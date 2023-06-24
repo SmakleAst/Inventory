@@ -1,12 +1,60 @@
 ﻿@model ComputerViewModel
 
-<form id="createForm">
+<form id="computerForm">
     <div>
-        <input name="inventoryNumber" class="form-group col-md-8 mb-3" placeholder=@Model.InventoryNumber type="text" />
-        <input name="description" class="form-group col-md-8 mb-3" placeholder=@Model.Description type="text" />
-        <input name="owner" class="form-group col-md-8 mb-3" placeholder=@Model.Owner type="text" />
-        <input name="location" class="form-group col-md-8 mb-3" placeholder=@Model.Location type="text" />
-        <input name="additionDate" class="form-group col-md-8 mb-3" placeholder=@Model.AdditionDate type="text" />
+        <input name="id" hidden value=@Model.Id />
+        <input disabled name="inventoryNumber" id="inventoryNumber" class="form-group col-md-8 mb-3" value=@Model.InventoryNumber type="text" />
+        <input disabled name="description" id="description" class="form-group col-md-8 mb-3" value=@Model.Description type="text" />
+        <input disabled name="owner" id="owner" class="form-group col-md-8 mb-3" value=@Model.Owner type="text" />
+        <input disabled name="location" id="location" class="form-group col-md-8 mb-3" value=@Model.Location type="text" />
+        <input disabled name="additionDate" id="additionDate" class="form-group col-md-8 mb-3" value=@Model.AdditionDate type="datetime" />
     </div>
-    <button id="createTask" class="btn btn-primary col-md-3 mb-2">Создать</button>
+    <button id="saveChanges" class="btn btn-primary col-md-3 mb-2">Создать</button>
+    <button id="edit" class="btn btn-primary col-md-3 mb-2">Изменить</button>
 </form>
+
+@section Scripts
+{
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script>
+
+        $('#edit').on('click', function (event) {
+            event.preventDefault();
+            $('#inventoryNumber').prop("disabled", false);
+            $('#description').prop("disabled", false);
+            $('#owner').prop("disabled", false);
+            $('#location').prop("disabled", false);
+        });
+
+        $('#saveChanges').on('click', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("UpdateComputer", "Computer")',
+                data: $('#computerForm').serialize(),
+                success: function (response) {
+                    Swal.fire({
+                        title: 'Информация',
+                        text: response.description,
+                        icon: 'success',
+                        confimButtonText: 'Ok'
+                    })
+                },
+                error: function (response) {
+                    Swal.fire({
+                        title: 'Информация',
+                        text: response.responseJSON.description,
+                        icon: 'error',
+                        confimButtonText: 'Ok'
+                    })
+                }
+            })
+            $('#inventoryNumber').prop("disabled", true);
+            $('#description').prop("disabled", true);
+            $('#owner').prop("disabled", true);
+            $('#location').prop("disabled", true);
+        })
+    </script>
+}

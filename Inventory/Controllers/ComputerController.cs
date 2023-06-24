@@ -1,9 +1,6 @@
-﻿using Inventory.DAL;
-using Inventory.DAL.Interfaces;
-using Inventory.Domain.Entity;
+﻿using Inventory.Domain.ViewModels.Computers;
 using Inventory.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Controllers
 {
@@ -20,6 +17,19 @@ namespace Inventory.Controllers
             var computer = _computerService.GetOneComputer(id);
 
             return View(computer);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateComputer(UpdateComputerViewModel model)
+        {
+            var response = await _computerService.Update(model);
+
+            if (response.StatusCode == Domain.Enum.StatusCode.Ok)
+            {
+                return Ok(new { description = response.Description });
+            }
+
+            return BadRequest(new { description = response.Description });
         }
     }
 }

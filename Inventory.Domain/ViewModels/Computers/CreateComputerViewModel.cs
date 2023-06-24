@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
-
-namespace Inventory.Domain.ViewModels.Computers
+﻿namespace Inventory.Domain.ViewModels.Computers
 {
     public class CreateComputerViewModel
     {

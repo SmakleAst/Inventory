@@ -67,6 +67,54 @@ namespace Inventory.Service.Implementations
             }
         }
 
+        public async Task<IComputerResponse<ComputerEntity>> Update(UpdateComputerViewModel model)
+        {
+            try
+            {
+                _logger.LogInformation($"Запрос на изменение компьютера - {model.Id}");
+
+                var computer = await _computerRepository.GetAll()
+                    .FirstOrDefaultAsync(x => x.Id == model.Id);
+
+                if (computer == null)
+                {
+                    return new ComputerResponse<ComputerEntity>()
+                    {
+                        Description = "Такой компьютер не найден",
+                        StatusCode = StatusCode.ComputerNotFound
+                    };
+                }
+
+                computer = new ComputerEntity()
+                {
+                    Id = model.Id,
+                    InventoryNumber = model.InventoryNumber,
+                    Description = model.Description,
+                    Owner = model.Owner,
+                    Location = model.Location,
+                    AdditionDate = computer.AdditionDate,
+                };
+
+                await _computerRepository.Update(computer);
+
+                _logger.LogInformation($"Компьютер изменен: id = {computer.Id}");
+                return new ComputerResponse<ComputerEntity>()
+                {
+                    Description = "Компьютер изменен",
+                    StatusCode = StatusCode.Ok
+                };
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, $"[ComputerService.Update]: {exception.Message}");
+                return new ComputerResponse<ComputerEntity>()
+                {
+                    Description = $"{exception.Message}",
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+        }
+
         public async Task<IComputerResponse<IEnumerable<ComputerViewModel>>> GetComputers()
         {
             try
