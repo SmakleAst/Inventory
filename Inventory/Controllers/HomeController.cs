@@ -1,4 +1,6 @@
-﻿using Inventory.Domain.ViewModels.Computers;
+﻿using Azure;
+using Inventory.Domain.Filters;
+using Inventory.Domain.ViewModels.Computers;
 using Inventory.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,11 +32,24 @@ namespace Inventory.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ComputerHandler()
+        public async Task<IActionResult> ComputerHandler(DeviceFilter filter)
         {
-            var response = await _computerService.GetComputers();
+            var response = await _computerService.GetComputers(filter);
 
             return Json(new { data = response.Data });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(CreateComputerViewModel model)
+        {
+            var response = await _computerService.Delete(model);
+
+            if (response.StatusCode == Domain.Enum.StatusCode.Ok)
+            {
+                return Ok(new { description = response.Description });
+            }
+
+            return BadRequest(new { description = response.Description });
         }
     }
 }

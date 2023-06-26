@@ -12,18 +12,41 @@
     <button id="createTask" class="btn btn-primary col-md-3 mb-2">Создать</button>
 </form>
 
-<table class="table table-dark table-hover" id="tableId">
-    <thead>
-        <tr>
-            <th>Инв. номер</th>
-            <th>Описание</th>
-            <th>Владелец</th>
-            <th>Локация</th>
-            <th>Дата добавления</th>
-            <th></th>
-        </tr>
-    </thead>
-</table>
+<div class="row">
+    <div class="form-group col-md-2">
+        <label class="col-form-label">Инв. номер</label>
+        <input name="inventoryFilter" type="text" class="form-control" />
+    </div>
+    <div class="form-group col-md-2">
+        <label class="col-form-label">Описание</label>
+        <input name="descriptionFilter" type="text" class="form-control" />
+    </div>
+    <div class="form-group col-md-2">
+        <label class="col-form-label">Владелец</label>
+        <input name="ownerFilter" type="text" class="form-control" />
+    </div>
+    <div class="form-group col-md-2 mb-3">
+        <label class="col-form-label">Локация</label>
+        <input name="locationFilter" type="text" class="form-control" />
+    </div>
+</div>
+
+<div class="table-wrapper-scroll-y my-custom-scrollbar">
+    <table class="table table-bordered table-dark table-hover table-striped mb-0" id="tableId">
+        <thead>
+            <tr>
+                <th>Инв. номер</th>
+                <th>Описание</th>
+                <th>Владелец</th>
+                <th>Локация</th>
+                <th>Дата добавления</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
 
 @section Scripts
 {
@@ -61,13 +84,18 @@
                     render: function (data, type) {
                         return '<button class="btn btn-success btn-sm center-block">Подробнее</button>'
                     }
-                }
+                },
+                {
+                    data: null,
+                    sortable: false,
+                    render: function (data, type) {
+                        return '<button class="btn btn-danger btn-sm center-block">Удалить</button>'
+                    }
+                },
             ],
             createdRow: function(nRow, data) {
                 var handlerComplete = function() {
-                    //console.log(data.id);
                     toComputer(data.id);
-                    //toComputer();
                 }
 
                 for (var i = 0; i < dataTable.columns().header().length - 1; i++) {
@@ -77,62 +105,32 @@
                 }
                 $('td button', nRow).on('click', handlerComplete);
             }
-            //createdRow: function (nRow, data) {
-            //    var handlerComplete = function () {
-            //        swalWithBootstrapButtons.fire({
-            //            title: 'Вы уверены?',
-            //            icon: 'warning',
-            //            confirmButtonText: 'Да',
-            //            reverseButtons: true
-            //        }).then((result) => {
-            //            if (result.isConfirmed) {
-            //                console.log("%d", data.isCompleted);
-            //                $.ajax({
-            //                    type: 'POST',
-            //                    url: '@Url.Action("ChangeTaskCompleteStatus")',
-            //                    data: {
-            //                        id: data.id,
-            //                        isCompleted: data.isCompleted
-            //                    },
-            //                    success: function (response) {
-            //                        Swal.fire({
-            //                            title: 'Информация',
-            //                            text: response.description,
-            //                            icon: 'success',
-            //                            confimButtonText: 'Ok'
-            //                        })
-            //                        dataTable.draw();
-            //                    },
-            //                    error: function (response) {
-            //                        Swal.fire({
-            //                            title: 'Информация',
-            //                            text: response.responseJSON.description,
-            //                            icon: 'error',
-            //                            confimButtonText: 'Ok'
-            //                        })
-            //                    }
-            //                })
-            //            }
-            //        })
-            //    }
-            
-            //    for (var i = 0; i < dataTable.columns().header().length - 1; i++) {
-            //        $('td', nRow).eq(i).css('cursor', 'pointer');
-            
-            //        $('td', nRow).eq(i).on('click', null);
-            //    }
-            //    $('td button', nRow).on('click', handlerComplete);
-            //}
         })
 
         function model() {
             return {
-                InventoryNumber: $('input[name="inventoryNumber"]').val(),
-                Description: $('input[name="description"]').val(),
-                Owner: $('input[name="descriptionTask"]').val(),
-                Location: $('input[name="location"]').val(),
+                InventoryNumber: $('input[name="inventoryFilter"]').val(),
+                Description: $('input[name="descriptionFilter"]').val(),
+                Owner: $('input[name="ownerFilter"]').val(),
+                Location: $('input[name="locationFilter"]').val(),
             }
         }
+
+        $('input[name="inventoryFilter"]').on('change', function () {
+            dataTable.draw();
+        })
+
+        $('input[name="descriptionFilter"]').on('change', function () {
+            dataTable.draw();
+        })
+
+        $('input[name="ownerFilter"]').on('change', function () {
+            dataTable.draw();
+        })
+
+        $('input[name="locationFilter"]').on('change', function () {
+            dataTable.draw();
+        })
 
         function toComputer(id) {
             var url = '@Url.Action("Index", "Computer", new { id = "__id__" })';
@@ -175,5 +173,6 @@
                 }
             })
         })
+
     </script>
 }

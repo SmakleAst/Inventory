@@ -1,6 +1,8 @@
 ﻿using Inventory.DAL.Interfaces;
 using Inventory.Domain.Entity;
 using Inventory.Domain.Enum;
+using Inventory.Domain.Extensions;
+using Inventory.Domain.Filters;
 using Inventory.Domain.Response;
 using Inventory.Domain.ViewModels.Computers;
 using Inventory.Service.Interfaces;
@@ -115,14 +117,19 @@ namespace Inventory.Service.Implementations
             }
         }
 
-        public async Task<IComputerResponse<IEnumerable<ComputerViewModel>>> GetComputers()
+        public async Task<IComputerResponse<IEnumerable<ComputerViewModel>>> GetComputers(DeviceFilter filter)
         {
             try
             {
                 var computers = await _computerRepository.GetAll()
-                    //.WhereIf(!string.IsNullOrWhiteSpace(filter.Description),
-                    //    x => x.Description.Contains(filter.Description))
-                    //.WhereIf(filter.Priority.HasValue, x => x.Priority == filter.Priority)
+                    .WhereIf(!string.IsNullOrWhiteSpace(filter.InventoryNumber),
+                        x => x.InventoryNumber.Contains(filter.InventoryNumber))
+                    .WhereIf(!string.IsNullOrWhiteSpace(filter.Description),
+                        x => x.Description.Contains(filter.Description))
+                    .WhereIf(!string.IsNullOrWhiteSpace(filter.Owner),
+                        x => x.Owner.Contains(filter.Owner))
+                    .WhereIf(!string.IsNullOrWhiteSpace(filter.Location),
+                        x => x.Location.Contains(filter.Location))
                     .Select(x => new ComputerViewModel()
                     {
                         Id = x.Id,
@@ -166,6 +173,55 @@ namespace Inventory.Service.Implementations
                 .FirstOrDefault(x => x.Id == id);
 
             return computer;
+        }
+
+        public async Task<IComputerResponse<ComputerEntity>> Delete(CreateComputerViewModel model)
+        {
+            try
+            {
+                model.Validate();
+
+                _logger.LogInformation($"Запрос на удаление компьютера - {model.InventoryNumber}");
+
+                var computer = await _computerRepository.GetAll()
+                    .FirstOrDefaultAsync(x => x.InventoryNumber == model.InventoryNumber);
+
+                if (computer == null)
+                {
+                    return new ComputerResponse<ComputerEntity>()
+                    {
+                        Description = "Такого компьютера нет",
+                        StatusCode = StatusCode.ComputerAlreadyExists
+                    };
+                }
+
+                computer = new ComputerEntity()
+                {
+                    InventoryNumber = model.InventoryNumber,
+                    Description = model.Description,
+                    Owner = model.Owner,
+                    Location = model.Location,
+                    AdditionDate = DateTime.Today,
+                };
+
+                await _computerRepository.Delete(computer);
+
+                _logger.LogInformation($"Компьютер удалился: {computer.Id} {computer.AdditionDate}");
+                return new ComputerResponse<ComputerEntity>()
+                {
+                    Description = "Компьютер удален",
+                    StatusCode = StatusCode.Ok
+                };
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, $"[ComputerService.Delete]: {exception.Message}");
+                return new ComputerResponse<ComputerEntity>()
+                {
+                    Description = $"{exception.Message}",
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
         }
     }
 }
