@@ -10,10 +10,13 @@
             <input disabled name="location" id="location" class="form-group col-md-8 mb-3" value=@Model.Location type="text" />
             <input disabled name="additionDate" id="additionDate" class="form-group col-md-8 mb-3" value=@Model.AdditionDate type="datetime" />
         </div>
-        <button disabled id="saveChanges" class="btn btn-primary col-md-3 mb-2">Сохранить</button>
-        <button id="edit" class="btn btn-primary col-md-3 mb-2">Изменить</button>
+        <button disabled id="saveChanges" class="btn btn-primary col-md-3 mb-4">Сохранить</button>
+        <button id="edit" class="btn btn-primary col-md-3 mb-4">Изменить</button>
     </form>
-    <img src="~/QrCode/MyQR.png" class="col-md-4">
+    <div class="row">
+        <img src="~/QrCode/MyQR.png" class="col-md-2">
+        <a href="~/QrCode/MyQR.png" download="MyQR.png">Скачать</a>
+    </div>
 </div>
 
 @section Scripts

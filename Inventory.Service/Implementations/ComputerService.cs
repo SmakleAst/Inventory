@@ -175,16 +175,14 @@ namespace Inventory.Service.Implementations
             return computer;
         }
 
-        public async Task<IComputerResponse<ComputerEntity>> Delete(CreateComputerViewModel model)
+        public async Task<IComputerResponse<ComputerEntity>> Delete(int id)
         {
             try
             {
-                model.Validate();
-
-                _logger.LogInformation($"Запрос на удаление компьютера - {model.InventoryNumber}");
+                _logger.LogInformation($"Запрос на удаление компьютера - {id}");
 
                 var computer = await _computerRepository.GetAll()
-                    .FirstOrDefaultAsync(x => x.InventoryNumber == model.InventoryNumber);
+                    .FirstOrDefaultAsync(x => x.Id == id);
 
                 if (computer == null)
                 {
@@ -195,14 +193,15 @@ namespace Inventory.Service.Implementations
                     };
                 }
 
-                computer = new ComputerEntity()
-                {
-                    InventoryNumber = model.InventoryNumber,
-                    Description = model.Description,
-                    Owner = model.Owner,
-                    Location = model.Location,
-                    AdditionDate = DateTime.Today,
-                };
+                //computer = new ComputerEntity()
+                //{
+                //    Id = id,
+                //    InventoryNumber = computer.InventoryNumber,
+                //    Description = model.Description,
+                //    Owner = model.Owner,
+                //    Location = model.Location,
+                //    AdditionDate = DateTime.Today,
+                //};
 
                 await _computerRepository.Delete(computer);
 

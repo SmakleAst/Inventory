@@ -69,7 +69,7 @@
             sorting: false,
             ajax: {
                 url: '@Url.Action("ComputerHandler")',
-                method: 'POST',
+                method: 'GET',
                 data: model
             },
             columns: [
@@ -82,19 +82,29 @@
                     data: null,
                     sortable: false,
                     render: function (data, type) {
-                        return '<button class="btn btn-success btn-sm center-block">Подробнее</button>'
+                        return '<button id="info" class="btn btn-success btn-sm center-block">Подробнее</button>'
                     }
                 },
                 {
                     data: null,
                     sortable: false,
                     render: function (data, type) {
-                        return '<button class="btn btn-danger btn-sm center-block">Удалить</button>'
+                        return '<button id="delete" class="btn btn-danger btn-sm center-block">Удалить</button>'
                     }
                 },
             ],
             createdRow: function(nRow, data) {
-                var handlerComplete = function() {
+                var handlerDelete = function () {
+                    console.log(data.id);
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("Delete")',
+                        data: { id: data.id },
+                    })
+                }
+
+                var handlerInfo = function () {
+                    console.log(data.id);
                     toComputer(data.id);
                 }
 
@@ -103,7 +113,8 @@
 
                     $('td', nRow).eq(i).on('click', null);
                 }
-                $('td button', nRow).on('click', handlerComplete);
+                $('#info', nRow).on('click', handlerInfo);
+                $('#delete', nRow).on('click', handlerDelete);
             }
         })
 
@@ -136,18 +147,6 @@
             var url = '@Url.Action("Index", "Computer", new { id = "__id__" })';
             window.location.href = url.replace('__id__', id);
         }
-        //function toComputer() {
-        //    var url = '@Url.Action("Index", "Computer")';
-        //    window.location.href = url;
-        //}
-
-        //$('input[name="descriptionTask"]').on('change', function () {
-        //    dataTable.draw();
-        //})
-
-        //$('#prioritySearch').on('change', function () {
-        //    dataTable.draw();
-        //})
 
         $('#createTask').on('click', function (e) {
             e.preventDefault();

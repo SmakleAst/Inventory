@@ -10,7 +10,7 @@ namespace Inventory.Service.Interfaces
     {
         Task<IComputerResponse<ComputerEntity>> Create(CreateComputerViewModel model);
 
-        Task<IComputerResponse<ComputerEntity>> Delete(CreateComputerViewModel model);
+        Task<IComputerResponse<ComputerEntity>> Delete(int id);
 
         Task<IComputerResponse<ComputerEntity>> Update(UpdateComputerViewModel model);
 

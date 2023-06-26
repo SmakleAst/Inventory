@@ -31,7 +31,7 @@ namespace Inventory.Controllers
             return BadRequest(new { description = response.Description });
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> ComputerHandler(DeviceFilter filter)
         {
             var response = await _computerService.GetComputers(filter);
@@ -40,9 +40,9 @@ namespace Inventory.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(CreateComputerViewModel model)
+        public async Task<IActionResult> Delete(int id)
         {
-            var response = await _computerService.Delete(model);
+            var response = await _computerService.Delete(id);
 
             if (response.StatusCode == Domain.Enum.StatusCode.Ok)
             {
